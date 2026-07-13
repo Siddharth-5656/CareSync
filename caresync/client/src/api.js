@@ -3,10 +3,13 @@
 // Reads VITE_API_BASE from the environment (see .env.example).
 // ============================================================
 
-export const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:4000';
+const configuredBase = (import.meta.env.VITE_API_BASE || '').trim().replace(/\/$/, '');
+const fallbackBase = 'https://caresync-kyj0.onrender.com';
+export const API_BASE = configuredBase || (import.meta.env.DEV ? 'http://localhost:4000' : fallbackBase);
 
 async function request(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, options);
+  const url = API_BASE ? `${API_BASE}${path}` : path;
+  const res = await fetch(url, options);
   const isJson = res.headers.get('content-type')?.includes('application/json');
   const data = isJson ? await res.json().catch(() => null) : null;
 
