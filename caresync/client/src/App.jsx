@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -21,8 +21,10 @@ function ParentProtectedRoute({ children }) {
 }
 
 export default function App() {
+  const Router = window.location.hostname.includes('localhost') ? BrowserRouter : HashRouter;
+
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
         {/* Child / family-member facing routes */}
         <Route path="/login" element={<Login />} />
@@ -55,8 +57,9 @@ export default function App() {
           }
         />
 
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
